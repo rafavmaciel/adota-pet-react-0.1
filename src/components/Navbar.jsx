@@ -44,7 +44,7 @@ export default function Navbar() {
                         </Link>
                     </li>
                     <li className="nav-item" onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-                        <Link to="/services" className="nav-links" onClick={closeMobileMenu}>
+                        <Link to="/pets" className="nav-links" onClick={closeMobileMenu}>
                             Pets <i className="fas fa-caret-down" />
                         </Link>
                         {dropdown && <Dropdown menuItens = {MenuPetItens} />}
@@ -55,7 +55,7 @@ export default function Navbar() {
                         </Link>
                     </li>
                     <li className="nav-item">
-                        <Link to="/contact-us" className="nav-links" onClick={closeMobileMenu}>
+                        <Link to="/contact" className="nav-links" onClick={closeMobileMenu}>
                             Contate - Nos
                         </Link>
                     </li>
