@@ -22,6 +22,5 @@ export default function PetCard(props) {
                             </Typography>
                         </CardFooter>
                     </Card>
-     
     );
 }
