@@ -4,6 +4,7 @@ import Dropdown from "./Dropdown";
 import "./navbar.css";
 import { Link } from "react-router-dom";
 import { MenuPetItens } from './MenuPetItens';
+import Search from "./Search";
 export default function Navbar() {
     const [click, setClick] = useState(false);
     const [dropdown, setDropdown] = useState(false);
@@ -66,6 +67,7 @@ export default function Navbar() {
                     </li>
                 </ul>
                 <Button />
+                <Search/>
             </nav>
         </>
     );
