@@ -1,17 +1,20 @@
 export const MenuPetItens = [
   {
     title: 'Cachorro',
-    path: '/cachorro',
-    cName: 'dropdown-link'
+    path: '/search-pet/cachorro',
+    cName: 'dropdown-link',
+    search : 'ca',
   },
   {
-    title: 'Gatos',
-    path: '/consulting',
-    cName: 'dropdown-link'
+    title: 'Gato',
+    path: '/search-pet/gato',
+    cName: 'dropdown-link',
+    search : 'ga',
   },
   {
     title: 'Outros',
-    path: '/design',
-    cName: 'dropdown-link'
+    path: '/search-pet/outros',
+    cName: 'dropdown-link',
+    search : 'outros',
   },
 ];

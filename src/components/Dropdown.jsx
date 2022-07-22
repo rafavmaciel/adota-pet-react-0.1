@@ -18,7 +18,8 @@ function Dropdown(props) {
             <li key={index}>
               <Link
                 className={item.cName}
-                to={item.path}
+                to={{pathname: item.path,
+                search: item.search}}
                 onClick={() => setClick(false)}
               >
                 {item.title}
