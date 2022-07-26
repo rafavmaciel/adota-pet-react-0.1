@@ -9,11 +9,11 @@ import ContactUs from "./pages/ContactUs";
 import "./App.css";
 import SearchPage from "./pages/SearchPage";
 import LoginModal from "./components/LoginModal";
-import {initialState, reducer} from "./redux/UserReducer";
+import { UserProvider } from "./redux/UserReducer";
 function App() {
-    const [state, dispatch ] = useReducer(reducer, initialState);
 
     return (
+        <UserProvider>
         <Router>
             <Navbar />
             <Routes>
@@ -24,6 +24,7 @@ function App() {
                 <Route path="/search-pet/:tipo" element={<SearchPage/>} />
             </Routes>
         </Router>
+        </UserProvider>
     );
 }
 

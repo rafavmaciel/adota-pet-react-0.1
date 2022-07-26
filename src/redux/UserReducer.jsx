@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useReducer, createContext } from "react";
 
 let initialState = {
     user: {
@@ -7,28 +7,34 @@ let initialState = {
         photoUrl: "",
         uid: "",
         provider: "",
-        isAuthenticated: "false",
+        isAuthenticated: false,
     },
 };
 
-let reducer = (state, action) => {
-    switch (action.type) {
-        case "SET_USER":
-            return {
-                ...state,
-                user: action.payload,
-            };
-        case "SET_IS_AUTHENTICATED":
-            return {
-                ...state,
-                user: {
-                    ...state.user,
-                    isAuthenticated: action.payload,
-                },
-            };
-        default:
-            return state;
-    }
-}
+const UserContext = createContext(initialState);
 
-export { initialState, reducer };
+export const UserProvider = ({ children }) => {
+    let reducer = (state, action) => {
+        switch (action.type) {
+            case "SET_USER":
+                return {
+                    ...state,
+                    user: action.payload,
+                };
+            case "SET_IS_AUTHENTICATED":
+                return {
+                    ...state,
+                    user: {
+                        ...state.user,
+                        isAuthenticated: action.payload,
+                    },
+                };
+            default:
+                return state;
+        }
+    };
+    const [state, dispatch] = useReducer(reducer, initialState);
+    return <UserContext.Provider value={{ state, dispatch }}>{children}</UserContext.Provider>;
+};
+
+export default UserContext;

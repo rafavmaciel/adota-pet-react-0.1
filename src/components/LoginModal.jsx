@@ -1,23 +1,22 @@
 import { FaFacebookF, FaLinkedinIn, FaGoogle, FaEnvelope} from "react-icons/fa";
 import { MdLockOutline } from "react-icons/md";
 import { signInWithGoogle } from "../config/googleAtutentication";
-import { initialState, reducer } from "../redux/UserReducer";
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useContext} from "react";
 import { useNavigate } from "react-router-dom";
+import UserContext, {UserProvider} from "../redux/UserReducer";
 
 export default function LoginModal() {
-    const [state, dispatch ] = useReducer(reducer, initialState);
     const navigate = useNavigate();
-
+    const {state, dispatch} = useContext(UserContext);
     async function logarGoogle() {
         let user = await signInWithGoogle();
-        console.log(user.user);
         dispatch({ type: "SET_USER", payload: user });
     }
 
     useEffect(() => {
-        if (state.user.isAuthenticated) {
-            console.log("autenticado");
+        //console.log(state.user)
+        if (state.user.isAuthenticated === true) {
+            //console.log("autenticado");
             navigate("/");
         }
     }

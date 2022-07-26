@@ -14,7 +14,6 @@ export default function Home() {
       onSnapshot(collection(db, "pets"), (snapshot) => {
         setPets(snapshot.docs.map(doc => doc.data()));
         setLoading(false);
-        console.log(snapshot.docs.map(doc => doc.data()));
            }
         );
     }

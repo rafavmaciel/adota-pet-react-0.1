@@ -8,7 +8,6 @@ import { useParams } from "react-router-dom";
 
 export default function SearchPage(props) {
     const { tipo } = useParams();
-    console.log(tipo);
 
     const [pets, setPets] = useState([]);
     const [loading, setLoading] = useState(true);
