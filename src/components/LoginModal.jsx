@@ -1,6 +1,6 @@
 import { FaFacebookF, FaLinkedinIn, FaGoogle, FaEnvelope} from "react-icons/fa";
 import { MdLockOutline } from "react-icons/md";
-
+import { signInWithGoogle } from "../config/googleAtutentication";
 export default function LoginModal() {
     return (
         <div className="flex flex flex-col items-center justify-center min-h-screen py-2 ">
@@ -20,7 +20,7 @@ export default function LoginModal() {
                                 <a href="#" className="border-2 border-gray-100 rounded-full p-3 mx-1 hover:bg-blue-500 hover:border-gray-100 ">
                                     <FaLinkedinIn className="text-blue-500 hover:text-white" />
                                 </a>
-                                <a href="#" className="border-2 border-gray-100 rounded-full p-3 mx-1 hover:bg-blue-500 hover:border-gray-100 ">
+                                <a onClick={signInWithGoogle} className="border-2 border-gray-100 rounded-full p-3 mx-1 hover:bg-blue-500 hover:border-gray-100 ">
                                     <FaGoogle className="text-blue-500 hover:text-white" />
                                 </a>
                             </div>
