@@ -84,7 +84,7 @@ export default function Navbar() {
                 </ul>
                 {console.log(state.user.isAuthenticated)}
                 { auth ? (
-              <div>ssdsadsasad</div> ) : ( <Button />) }
+              <DropdownUsuario/> ) : ( <Button />) }
                 <Search/>
             </nav>
         </>

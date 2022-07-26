@@ -1,35 +1,13 @@
-import React, { useState } from 'react';
-import './dropdown.css';
-import { Link } from 'react-router-dom';
-
-function DropdownUsuario(props) {
-  const [click, setClick] = useState(false);
-
-  const handleClick = () => setClick(!click);
-
-  return (
-    <>
-      <ul
-        onClick={handleClick}
-        className={click ? 'dropdown-menu clicked' : 'dropdown-menu'}
-      >
-        {props.menuItens.map((item, index) => {
-          return (
-            <li key={index}>
-              <Link
-                className={item.cName}
-                to={{pathname: item.path,
-                search: item.search}}
-                onClick={() => setClick(false)}
-              >
-                {item.title}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </>
-  );
+import React, { useState, useContext } from "react";
+import "./dropdownUsuario.css";
+import UserContext, { UserProvider } from "../redux/UserReducer";
+export default function DropdownUsuario() {
+    const { state, dispatch } = useContext(UserContext);
+    const [click, setClick] = useState(false);
+    console.log(state.user.photoURL);
+    return (
+        <div className="Menu-usuario">
+            <img src={state.user.photoURL} alt="user" />
+        </div>
+    );
 }
-
-export default DropdownUsuario;
