@@ -1,7 +1,29 @@
 import { FaFacebookF, FaLinkedinIn, FaGoogle, FaEnvelope} from "react-icons/fa";
 import { MdLockOutline } from "react-icons/md";
 import { signInWithGoogle } from "../config/googleAtutentication";
+import { initialState, reducer } from "../redux/UserReducer";
+import { useEffect, useReducer } from "react";
+import { useNavigate } from "react-router-dom";
+
 export default function LoginModal() {
+    const [state, dispatch ] = useReducer(reducer, initialState);
+    const navigate = useNavigate();
+
+    async function logarGoogle() {
+        let user = await signInWithGoogle();
+        console.log(user.user);
+        dispatch({ type: "SET_USER", payload: user });
+    }
+
+    useEffect(() => {
+        if (state.user.isAuthenticated) {
+            console.log("autenticado");
+            navigate("/");
+        }
+    }
+    , [state.user.isAuthenticated]);
+
+    
     return (
         <div className="flex flex flex-col items-center justify-center min-h-screen py-2 ">
             <main className="flex flex-col items-center justify-center w-full flex-1 px-20 text-center">
@@ -20,7 +42,7 @@ export default function LoginModal() {
                                 <a href="#" className="border-2 border-gray-100 rounded-full p-3 mx-1 hover:bg-blue-500 hover:border-gray-100 ">
                                     <FaLinkedinIn className="text-blue-500 hover:text-white" />
                                 </a>
-                                <a onClick={signInWithGoogle} className="border-2 border-gray-100 rounded-full p-3 mx-1 hover:bg-blue-500 hover:border-gray-100 ">
+                                <a onClick={e => logarGoogle()} className="border-2 border-gray-100 rounded-full p-3 mx-1 hover:bg-blue-500 hover:border-gray-100 ">
                                     <FaGoogle className="text-blue-500 hover:text-white" />
                                 </a>
                             </div>

@@ -61,6 +61,7 @@ export default function Navbar() {
                         </Link>
                     </li>
                     <li>
+                        {/* se autenticado, trocas esse botão pelo dropdonw do user */}
                         <Link to="/sign-up" className="nav-links-mobile" onClick={closeMobileMenu}>
                             Sign Up
                         </Link>

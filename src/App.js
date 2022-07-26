@@ -1,13 +1,18 @@
 import React from "react";
 import Navbar from "./components/Navbar";
+import { useEffect, useReducer } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import ContactUs from "./pages/ContactUs";
 
+
 import "./App.css";
 import SearchPage from "./pages/SearchPage";
 import LoginModal from "./components/LoginModal";
+import {initialState, reducer} from "./redux/UserReducer";
 function App() {
+    const [state, dispatch ] = useReducer(reducer, initialState);
+
     return (
         <Router>
             <Navbar />
