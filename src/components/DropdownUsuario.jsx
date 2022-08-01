@@ -1,5 +1,5 @@
-import React, { useState, useContext } from "react";
-import "./dropdownUsuario.css";
+import React, { useState, useContext, useEffect } from "react";
+import "./style/dropdownUsuario.css";
 import UserContext, { UserProvider } from "../redux/UserReducer";
 import { Link } from "react-router-dom";
 
@@ -14,7 +14,7 @@ export default function DropdownUsuario() {
         // refresh page
         window.location.reload()
     }
-    
+
     return (
         <div className="Menu-usuario">
             <img  onClick={handleClick} src={state.user.photoUrl} alt="user" />

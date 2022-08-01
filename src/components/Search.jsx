@@ -1,4 +1,4 @@
-import './search.css';
+import './style/search.css';
 export default function Search() {
     return (
         <div className='Search-item'>

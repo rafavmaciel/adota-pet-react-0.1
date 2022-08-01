@@ -1,7 +1,7 @@
 import React, { useState, useReducer, useEffect, useContext } from "react";
 import Button from "./Button";
 import Dropdown from "./Dropdown";
-import "./navbar.css";
+import "./style/navbar.css";
 import { Link } from "react-router-dom";
 import { MenuPetItens } from "./MenuPetItens";
 import Search from "./Search";

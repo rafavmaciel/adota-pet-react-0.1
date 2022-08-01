@@ -1,4 +1,4 @@
-import './card.css';
+import './style/card.css';
 import { Card, CardHeader, CardBody, CardFooter, Typography } from "@material-tailwind/react";
 export default function PetCard(props) {
     return (
