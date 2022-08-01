@@ -27,8 +27,10 @@ export default function Home() {
                 <div className="PetCards-home">
                     <div class="p-10 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 xl:grid-cols-3 gap-5">
                         {
-                            pets.map((pet) => (
+                            pets.map((pet, i ) => (
                                 <PetCard
+                                    key={i}
+                                    id ={i}
                                     title={pet.nomePet}
                                     description={pet.descricaoPet}
                                     img={pet.imgPet}
