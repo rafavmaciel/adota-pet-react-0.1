@@ -66,7 +66,7 @@ export default function Navbar() {
                     </li>
                     {auth ? (
                         <li className="nav-item">
-                            <Link to="/products" className="nav-links" onClick={closeMobileMenu}>
+                            <Link to="/conta" className="nav-links" onClick={closeMobileMenu}>
                                 Minha Conta
                             </Link>
                         </li>

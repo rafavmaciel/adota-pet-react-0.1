@@ -8,6 +8,12 @@ export default function DropdownUsuario() {
     const [click, setClick] = useState(false);
 
     const handleClick = () => setClick(!click);
+
+    function logout () {
+        dispatch({type: 'LOGOUT'});
+        // refresh page
+        window.location.reload()
+    }
     
     return (
         <div className="Menu-usuario">
@@ -17,7 +23,7 @@ export default function DropdownUsuario() {
                     <Link to="/perfil">Perfil</Link>
                 </li>
                 <li className="dropdown-item">
-                    <Link to="/sair">Sair</Link>
+                    <p onClick={logout}>Sair</p>
                 </li>
                 </ul>
             </div>

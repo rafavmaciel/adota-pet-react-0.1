@@ -1,7 +1,7 @@
 import { useReducer, createContext, useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-import { auth } from '../config/firebase';
+import { auth } from "../config/firebase";
 
 let initialState = {
     user: {
@@ -32,23 +32,42 @@ export const UserProvider = ({ children }) => {
                         isAuthenticated: action.payload,
                     },
                 };
+            case "LOGOUT":
+                auth.signOut();
+                return {
+                    ...state,
+                    user: {
+                        user: "",
+                        email: "",
+                        photoUrl: "",
+                        uid: "",
+                        provider: "",
+                        isAuthenticated: false,
+                    },
+                };
+
             default:
                 return state;
         }
     };
-    useEffect (() => {
-        onAuthStateChanged(auth, user => {
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
             if (user) {
-                let obj =  { user:user.displayName, email: user.email, photoUrl: user.photoURL, uid: user.uid, provider: user.provider, isAuthenticated: user.isAuthenticated };
+                let obj = {
+                    user: user.displayName,
+                    email: user.email,
+                    photoUrl: user.photoURL,
+                    uid: user.uid,
+                    provider: user.provider,
+                    isAuthenticated: user.isAuthenticated,
+                };
                 dispatch({ type: "SET_USER", payload: obj });
                 dispatch({ type: "SET_IS_AUTHENTICATED", payload: true });
             } else {
                 dispatch({ type: "SET_IS_AUTHENTICATED", payload: false });
             }
-        }
-        );
-    }
-    , []);
+        });
+    }, []);
 
     const [state, dispatch] = useReducer(reducer, initialState);
     return <UserContext.Provider value={{ state, dispatch }}>{children}</UserContext.Provider>;

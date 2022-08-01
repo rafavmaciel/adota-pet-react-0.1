@@ -16,6 +16,7 @@ export default function LoginModal() {
     useEffect(() => {
         if (state.user.isAuthenticated === true) {
             navigate("/");
+            window.location.reload();
         }
     }
     , [state.user.isAuthenticated]);
