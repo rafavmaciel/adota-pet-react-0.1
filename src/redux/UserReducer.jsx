@@ -1,6 +1,5 @@
 import { useReducer, createContext, useEffect } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
 import { auth } from "../config/firebase";
 
 let initialState = {
