@@ -1,18 +1,18 @@
-import React, { useState,useReducer, useEffect, useContext } from "react";
+import React, { useState, useReducer, useEffect, useContext } from "react";
 import Button from "./Button";
 import Dropdown from "./Dropdown";
 import "./navbar.css";
 import { Link } from "react-router-dom";
-import { MenuPetItens } from './MenuPetItens';
+import { MenuPetItens } from "./MenuPetItens";
 import Search from "./Search";
 import DropdownUsuario from "./DropdownUsuario";
-import UserContext, {UserProvider} from "../redux/UserReducer";
+import UserContext, { UserProvider } from "../redux/UserReducer";
 
 export default function Navbar() {
-    const {state, dispatch} = useContext(UserContext);
+    const { state, dispatch } = useContext(UserContext);
     const [click, setClick] = useState(false);
     const [dropdown, setDropdown] = useState(false);
-    const [ auth, setAuth ] = useState(false);
+    const [auth, setAuth] = useState(false);
 
     const handleClick = () => setClick(!click);
     const closeMobileMenu = () => setClick(false);
@@ -34,14 +34,13 @@ export default function Navbar() {
     };
 
     useEffect(() => {
-        console.log('estado');
-        console.log(state);
+        //console.log('estado');
+        //console.log(state);
         if (state.user.isAuthenticated === true) {
             setAuth(true);
-            console.log(auth);
+            // console.log(auth);
         }
-    }
-    , [state.user.isAuthenticated]);
+    }, [state.user.isAuthenticated]);
 
     return (
         <>
@@ -63,13 +62,18 @@ export default function Navbar() {
                         <Link to="/pets" className="nav-links" onClick={closeMobileMenu}>
                             Pets <i className="fas fa-caret-down" />
                         </Link>
-                        {dropdown && <Dropdown menuItens = {MenuPetItens} />}
+                        {dropdown && <Dropdown menuItens={MenuPetItens} />}
                     </li>
-                    <li className="nav-item">
-                        <Link to="/products" className="nav-links" onClick={closeMobileMenu}>
-                            Minha Conta
-                        </Link>
-                    </li>
+                    {auth ? (
+                        <li className="nav-item">
+                            <Link to="/products" className="nav-links" onClick={closeMobileMenu}>
+                                Minha Conta
+                            </Link>
+                        </li>
+                    ) : (
+                        <div></div>
+                    )}
+
                     <li className="nav-item">
                         <Link to="/contact" className="nav-links" onClick={closeMobileMenu}>
                             Contate - Nos
@@ -82,10 +86,8 @@ export default function Navbar() {
                         </Link>
                     </li>
                 </ul>
-                {console.log(state.user.isAuthenticated)}
-                { auth ? (
-              <DropdownUsuario/> ) : ( <Button />) }
-                <Search/>
+                {auth ? <DropdownUsuario /> : <Button />}
+                <Search />
             </nav>
         </>
     );

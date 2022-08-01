@@ -14,9 +14,7 @@ export default function LoginModal() {
     }
 
     useEffect(() => {
-        //console.log(state.user)
         if (state.user.isAuthenticated === true) {
-            //console.log("autenticado");
             navigate("/");
         }
     }
