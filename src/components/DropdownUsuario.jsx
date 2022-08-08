@@ -19,10 +19,10 @@ export default function DropdownUsuario() {
         <div className="Menu-usuario">
             <img  onClick={handleClick} src={state.user.photoUrl} alt="user" />
                 <ul  className={click ? "dropdown-content" : "dropdown-content clicked"}>
-                <li className="dropdown-item">
-                    <Link to="/perfil">Perfil</Link>
+                <li  onClick={handleClick} className="dropdown-item">
+                    <Link to="/conta">Perfil</Link>
                 </li>
-                <li className="dropdown-item">
+                <li  onClick={handleClick} className="dropdown-item">
                     <p onClick={logout}>Sair</p>
                 </li>
                 </ul>

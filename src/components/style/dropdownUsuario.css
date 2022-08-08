@@ -34,3 +34,7 @@
 .dropdown-content.clicked {
     display: none;
 }
+
+.dropdown-content.clicked li {
+    display: none;
+}
