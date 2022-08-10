@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import ContactUs from "./pages/ContactUs";
 import MinhaConta from "./pages/MinhaConta";
 import { RequireAuth } from "./components/RequireAuth";
+import CadastroPet from "./pages/CadastroPet";
 
 
 import "./App.css";
@@ -25,6 +26,8 @@ function App() {
                 <Route path="/contact" element={<ContactUs />} />
                 <Route path="/search-pet/:tipo" element={<SearchPage/>} />
                 <Route path="/conta" element={<RequireAuth> <MinhaConta /> </RequireAuth> } />
+                <Route path="/cadastroPet" element={<RequireAuth> <CadastroPet/> </RequireAuth> } />
+
             </Routes>
         </Router>
         </UserProvider>

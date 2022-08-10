@@ -17,8 +17,7 @@ export default function MinhaConta() {
     }
 
     function handleClickModal() {
-        setShowModal(!showModal);
-        console.log(showModal);
+        navigate("/cadastroPet");
     }
 
     return (
