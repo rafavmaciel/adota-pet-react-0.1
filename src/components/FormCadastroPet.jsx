@@ -1,7 +1,8 @@
 import { useState, useEffect, useReducer, useContext } from "react";
-import { db } from "../config/firebase";
+import { db,storage } from "../config/firebase";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
 import { async } from "@firebase/util";
+import { ref, uploadBytesResumable,getDownloadURL } from "firebase/storage"; 
 
 export default function FormCadastroPet() {
     const [formaData, setFormaData] = useState({
@@ -15,9 +16,31 @@ export default function FormCadastroPet() {
         foto: "",
     });
 
+    const [imgUrl, setImgUrl] = useState("");
+    const [ progress , setProgress] = useState(0);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            let storageRef = ref(storage, `images/${e.target.fotosPet.files[0].name }`); 
+            let uploadTask = uploadBytesResumable(storageRef, e.target.fotosPet.files[0]);
+            uploadTask.on(
+                "state_changed",
+                (snapshot) => {
+                    console.log(snapshot);
+                    let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    setProgress(progress);
+                },
+                (error) => {
+                    console.log(error);
+                },
+                async () => {
+                    await getDownloadURL(uploadTask.snapshot.ref ).then((downloadURL) => {
+                        setImgUrl(downloadURL);
+                    });
+                }
+            );
+
             await addDoc(collection(db, "pets"), {
                 nomePet: e.target.nomePet.value,
                 tipoPet: e.target.tipoPet.value,
@@ -26,15 +49,19 @@ export default function FormCadastroPet() {
                     estadoPet: e.target.estadoPet.value,
                     cidadePet: e.target.cidadePet.value,
                     descricaoPet: e.target.descricaoPet.value,
+                    imgPet: imgUrl,
                 })
                 .then(() => {
                     console.log("Pet cadastrado com sucesso!");
                     
                 });
-        } catch (error) {
+
+            } catch (error) {
             console.log(error);
         }
     };
+
+
 
     return (
         <form onSubmit={handleSubmit}>
@@ -61,10 +88,10 @@ export default function FormCadastroPet() {
                         placeholder="Doe"
                         required
                     >
-                        <option value="">Cachorro</option>
-                        <option value="1">Gato</option>
-                        <option value="2">Papagaio</option>
-                        <option value="3">Outros</option>
+                        <option value="Cachorro">Cachorro</option>
+                        <option value="Gato">Gato</option>
+                        <option value="Papagaio">Papagaio</option>
+                        <option value="Outros">Outros</option>
                     </select>
                 </div>
                 <div>
@@ -77,10 +104,10 @@ export default function FormCadastroPet() {
                         placeholder="Flowbite"
                         required
                     >
-                        <option value="">Choose...</option>
-                        <option value="1">Pequeno</option>
-                        <option value="2">Médio</option>
-                        <option value="3">Grande</option>
+                        <option value="Choose">Choose...</option>
+                        <option value="Pequeno">Pequeno</option>
+                        <option value="Médio">Médio</option>
+                        <option value="Grande">Grande</option>
                     </select>
                 </div>
                 <div>
@@ -94,8 +121,8 @@ export default function FormCadastroPet() {
                         type="tel"
                         id="telefonePet"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="81-99912-4678"
-                        pattern="[0-9]{2}-[0-9]{5}-[0-9]{4}"
+                        placeholder="81999124678"
+                        pattern="[0-9]{11}"
                         required
                     />
                 </div>
@@ -144,15 +171,12 @@ export default function FormCadastroPet() {
                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                         Fazer upload de fotos{" "}
                     </label>
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        type="submit"
-                    >
-                        Upload
-                    </button>
+                    <input type="file" id="fotosPet" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
                 </div>
             </div>
-
+            <div className="flex justify-end">
+            {!imgUrl && <progress className="progress" value={progress} max="100" />}
+            </div>
             <button
                 type="submit"
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 my-10 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
