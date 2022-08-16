@@ -33,7 +33,7 @@ export default function SearchPage(props) {
                                     key={i}
                                     title={pet.nomePet}
                                     description={pet.descricaoPet}
-                                    img={pet.imgPet}
+                                    img={pet.imgPrincipal}
                                     local={pet.localPet}
                                 />
                             ) : null

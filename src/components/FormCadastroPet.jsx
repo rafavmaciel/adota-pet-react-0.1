@@ -6,28 +6,27 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 export default function FormCadastroPet() {
     const [imgUrlPrincipal, setImgUrlPrincipal] = useState("");
-    const [imgUrl, setImgUrl] = useState("");
     const [imgsObj, setImgsObj] = useState([]);
     const [progress, setProgress] = useState(0);
 
-    function getUrlsForm (e) {
-        
-    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-             for (let i = 0; i < e.target.fotosPet.files.length; i++) {
-                const file = e.target.fotosPet.files[i];
-                const filePath = `${file.name}`;
-                file["id"] = filePath;
-                setImgUrl((imgUrl) => [...imgUrl, file]);
-            }
-            const promises = []
-                imgUrl.map((image) => {
+            // pega todas as imagens que foram selecionadas
+            const files = e.target.fotosPet.files;
+            const imgs = [];
+            const refs = [];
+            // pega a key de cada imagem
+            Object.keys(files).forEach((key) => {
+                const file = files[key];
+                imgs.push(file);
+            });
+            let promessas = Promise.all(
+                // para cada imagem, faz o upload e pega a url
+                imgs.map(async (image) => {
                     let storageRef = ref(storage, `images/${image.name}`);
                     let uploadTask = uploadBytesResumable(storageRef, image);
-                    promises.push(uploadTask);
                     uploadTask.on(
                         "state_changed",
                         (snapshot) => {
@@ -37,16 +36,21 @@ export default function FormCadastroPet() {
                         (error) => {
                             console.log(error);
                         },
-                        async () => {
-                            await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                                console.log(downloadURL);
-                                setImgsObj((imgsObj) => [...imgsObj, downloadURL]);
-                            });
-                        }
+                        await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                            console.log(downloadURL);
+                            refs.push(downloadURL);
+                            setImgsObj((imgsObj) => [...imgsObj, downloadURL]);
+                        }).catch((error) => {
+                            console.log(error);
+                        }),
                     );
-                });
-            Promise.all(promises)
-            console.log(imgsObj);
+                })
+            );
+
+            //esprema todas as promises serem resolvidas
+            await promessas;
+    
+            // salva no banco de dados as informações do pet e o caminho das imagens
             await addDoc(collection(db, "pets"), {
                 nomePet: e.target.nomePet.value,
                 tipoPet: e.target.tipoPet.value,
@@ -55,12 +59,13 @@ export default function FormCadastroPet() {
                 estadoPet: e.target.estadoPet.value,
                 cidadePet: e.target.cidadePet.value,
                 descricaoPet: e.target.descricaoPet.value,
-                imgPet: imgsObj[0],
+                imgPet: refs,
+                imgPrincipal: refs[0],
             }).then(() => {
-                console.log("Pet cadastrado com sucesso!");
+                alert("Pet cadastrado com sucesso!");
             });
         } catch (error) {
-            console.log(error);
+            alert(error);
         }
     };
 
@@ -103,7 +108,6 @@ export default function FormCadastroPet() {
                         id="portePet"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Flowbite"
-                        required
                     >
                         <option value="Choose">Choose...</option>
                         <option value="Pequeno">Pequeno</option>
@@ -135,7 +139,6 @@ export default function FormCadastroPet() {
                         id="estadoPet"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="flowbite.com"
-                        required
                     >
                         <option value="">PE</option>
                         <option value="1">AL</option>
@@ -152,7 +155,6 @@ export default function FormCadastroPet() {
                         id="cidadePet"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder=""
-                        required
                     />
                 </div>
             </div>
@@ -164,7 +166,6 @@ export default function FormCadastroPet() {
                     id="descricaoPet"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="john.doe@portePet.com"
-                    required
                 />
             </div>
             <div className="grid gap-6 mb-6 lg:grid-cols-2">
