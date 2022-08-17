@@ -12,7 +12,7 @@ export default function Home() {
 
     const getPets = async () => {
       onSnapshot(collection(db, "pets"), (snapshot) => {
-        setPets(snapshot.docs.map(doc => doc.data()));
+        setPets(snapshot.docs.map(doc => ({id: doc.id,...doc.data()})));
         setLoading(false);
            }
         );
@@ -30,11 +30,12 @@ export default function Home() {
                             pets.map((pet, i ) => (
                                 <PetCard
                                     key={i}
-                                    id ={i}
+                                    id={pet.id}
                                     title={pet.nomePet}
                                     description={pet.descricaoPet}
                                     img={pet.imgPrincipal}
-                                    local={pet.localPet}
+                                    cidade={pet.cidadePet}
+                                    estado={pet.estadoPet}
                                 />
                             ))
                         }

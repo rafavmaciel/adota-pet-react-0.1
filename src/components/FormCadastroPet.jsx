@@ -1,14 +1,15 @@
 import { useState, useEffect, useReducer, useContext } from "react";
 import { db, storage } from "../config/firebase";
 import { collection, addDoc, Timestamp } from "firebase/firestore";
-import { async } from "@firebase/util";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { estadosBrasileiros, tiposAnimais, porteAnimais } from "../content/dadosFormulario";
+import { useNavigate } from "react-router-dom";
 
 export default function FormCadastroPet() {
+    const navigate = useNavigate();
     const [imgUrlPrincipal, setImgUrlPrincipal] = useState("");
     const [imgsObj, setImgsObj] = useState([]);
     const [progress, setProgress] = useState(0);
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -17,39 +18,43 @@ export default function FormCadastroPet() {
             const files = e.target.fotosPet.files;
             const imgs = [];
             const refs = [];
-            // pega a key de cada imagem
-            Object.keys(files).forEach((key) => {
-                const file = files[key];
-                imgs.push(file);
-            });
-            let promessas = Promise.all(
-                // para cada imagem, faz o upload e pega a url
-                imgs.map(async (image) => {
-                    let storageRef = ref(storage, `images/${image.name}`);
-                    let uploadTask = uploadBytesResumable(storageRef, image);
-                    uploadTask.on(
-                        "state_changed",
-                        (snapshot) => {
-                            let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                            setProgress(progress);
-                        },
-                        (error) => {
-                            console.log(error);
-                        },
-                        await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                            console.log(downloadURL);
-                            refs.push(downloadURL);
-                            setImgsObj((imgsObj) => [...imgsObj, downloadURL]);
-                        }).catch((error) => {
-                            console.log(error);
-                        }),
-                    );
-                })
-            );
+            if (files.length > 0) {
+                // pega a key de cada imagem
+                Object.keys(files).forEach((key) => {
+                    const file = files[key];
+                    imgs.push(file);
+                });
+                let promessas = Promise.all(
+                    // para cada imagem, faz o upload e pega a url
+                    imgs.map(async (image) => {
+                        let storageRef = ref(storage, `images/${image.name}`);
+                        let uploadTask = uploadBytesResumable(storageRef, image);
+                        uploadTask.on(
+                            "state_changed",
+                            (snapshot) => {
+                                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                setProgress(progress);
+                            },
+                            (error) => {
+                                console.log(error);
+                            },
+                            await getDownloadURL(uploadTask.snapshot.ref)
+                                .then((downloadURL) => {
+                                    console.log(downloadURL);
+                                    refs.push(downloadURL);
+                                    setImgsObj((imgsObj) => [...imgsObj, downloadURL]);
+                                })
+                                .catch((error) => {
+                                    console.log(error);
+                                })
+                        );
+                    })
+                );
 
-            //esprema todas as promises serem resolvidas
-            await promessas;
-    
+                //esprema todas as promises serem resolvidas
+                await promessas;
+            }
+
             // salva no banco de dados as informações do pet e o caminho das imagens
             await addDoc(collection(db, "pets"), {
                 nomePet: e.target.nomePet.value,
@@ -59,10 +64,15 @@ export default function FormCadastroPet() {
                 estadoPet: e.target.estadoPet.value,
                 cidadePet: e.target.cidadePet.value,
                 descricaoPet: e.target.descricaoPet.value,
-                imgPet: refs,
-                imgPrincipal: refs[0],
+                imgPet: refs || [],
+                imgPrincipal: refs[0] || "",
             }).then(() => {
+                document.getElementById("formCadastroPet").reset();
+                setImgsObj([]);
+                setImgUrlPrincipal("");
+                setProgress(0);
                 alert("Pet cadastrado com sucesso!");
+                navigate("/");
             });
         } catch (error) {
             alert(error);
@@ -70,11 +80,11 @@ export default function FormCadastroPet() {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} id="formCadastroPet">
             <div className="grid gap-6 mb-6 lg:grid-cols-2">
                 <div>
                     <label for="nomePet" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
-                        Nome do pet{" "}
+                        Nome do pet
                     </label>
                     <input
                         type="text"
@@ -94,10 +104,9 @@ export default function FormCadastroPet() {
                         placeholder="Doe"
                         required
                     >
-                        <option value="Cachorro">Cachorro</option>
-                        <option value="Gato">Gato</option>
-                        <option value="Papagaio">Papagaio</option>
-                        <option value="Outros">Outros</option>
+                        {tiposAnimais.map((tipo, i) => (
+                            <option value={i} key={i}>{tipo}</option>
+                        ))}
                     </select>
                 </div>
                 <div>
@@ -109,10 +118,9 @@ export default function FormCadastroPet() {
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Flowbite"
                     >
-                        <option value="Choose">Choose...</option>
-                        <option value="Pequeno">Pequeno</option>
-                        <option value="Médio">Médio</option>
-                        <option value="Grande">Grande</option>
+                        {porteAnimais.map((tipo, i) => (
+                            <option value={i} key={i}>{tipo}</option>
+                        ))}
                     </select>
                 </div>
                 <div>
@@ -139,11 +147,11 @@ export default function FormCadastroPet() {
                         id="estadoPet"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="flowbite.com"
+                        required
                     >
-                        <option value="">PE</option>
-                        <option value="1">AL</option>
-                        <option value="2">SE</option>
-                        <option value="3">CE</option>
+                        {estadosBrasileiros.map((estado) => (
+                            <option key={Object.keys(estado)}>{Object.values(estado)}</option>
+                        ))}
                     </select>
                 </div>
                 <div>
@@ -155,6 +163,7 @@ export default function FormCadastroPet() {
                         id="cidadePet"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder=""
+                        required
                     />
                 </div>
             </div>

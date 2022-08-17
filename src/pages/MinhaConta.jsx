@@ -22,7 +22,7 @@ export default function MinhaConta() {
 
     return (
         <div>
-        <Navbar transparent className="flex-col ">
+        <Navbar className="flex-col ">
 {/* infromações do usuário */}
             <CardFooter className="flex justify-between items-center bg-blue-500 mb-7">
                 <div className="flex items-center">
