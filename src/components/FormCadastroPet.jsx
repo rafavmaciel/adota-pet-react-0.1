@@ -105,7 +105,7 @@ export default function FormCadastroPet() {
                         required
                     >
                         {tiposAnimais.map((tipo, i) => (
-                            <option value={i} key={i}>{tipo}</option>
+                            <option value={tipo} key={i}>{tipo}</option>
                         ))}
                     </select>
                 </div>
@@ -119,7 +119,7 @@ export default function FormCadastroPet() {
                         placeholder="Flowbite"
                     >
                         {porteAnimais.map((tipo, i) => (
-                            <option value={i} key={i}>{tipo}</option>
+                            <option value={tipo} key={i}>{tipo}</option>
                         ))}
                     </select>
                 </div>

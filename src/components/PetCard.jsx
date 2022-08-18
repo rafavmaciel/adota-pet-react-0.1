@@ -6,8 +6,7 @@ import { useNavigate } from "react-router-dom";
 export default function PetCard(props) {
     const navigate = useNavigate();
     const handleClick = (id) => {
-        console.log(id);
-        navigate("/detalhesPet/10")
+        navigate("/detalhesPet/" + id)
     }    
     return (
         <Card className="mt-8 ml-8 xl:w-96 lg:w-90 md: w-80 transition duration-500 hover:scale-105 hover:bg-blue-50 hover:focus:border-blue-100" onClick={ e=>{handleClick(props.id) } } >

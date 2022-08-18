@@ -4,7 +4,6 @@ import PetCard from "../components/PetCard";
 import { db } from "../config/firebase";
 import { useState, useEffect } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
-import { async } from "@firebase/util";
 
 export default function Home() {
     const [pets, setPets] = useState([]);
