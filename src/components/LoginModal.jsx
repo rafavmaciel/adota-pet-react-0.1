@@ -1,20 +1,47 @@
 import { FaFacebookF, FaLinkedinIn, FaGoogle, FaEnvelope} from "react-icons/fa";
 import { MdLockOutline } from "react-icons/md";
 import { signInWithGoogle } from "../config/googleAtutentication";
-import { useEffect, useReducer, useContext} from "react";
+import { useEffect, useContext,useState} from "react";
 import { useNavigate } from "react-router-dom";
 import UserContext, {UserProvider} from "../redux/UserReducer";
+import {db} from "../config/firebase";
+import { collection, addDoc, doc, Timestamp, getDoc } from "firebase/firestore";
 
 export default function LoginModal() {
     const navigate = useNavigate();
     const {state, dispatch} = useContext(UserContext);
+    const [cadastrado, setCadastrado] = useState(false);
     async function logarGoogle() {
         let user = await signInWithGoogle();
         dispatch({ type: "SET_USER", payload: user });
+        await getUser(user);
+        dispatch({ type: "SET_IS_AUTHENTICATED", payload: true });
+        navigate("/");
     }
 
+//buscar usuario
+const  getUser = async (user) => {
+    const userRef =  doc(db, "users", user.uid)
+    const userDoc = await getDoc(userRef).then(doc => {
+        return doc.exists()
+    }).catch(err => {
+        console.log(err)
+    })
+    if(!userDoc) {
+        navigate("/cadastroUser")
+        console.log("usuario nao existe")
+    }
+    else {
+        dispatch({ type: "SET_REGISTEDED", payload: true });
+        setCadastrado(true);
+        console.log("usuario existe")
+    }
+}
+
+
     useEffect(() => {
-        if (state.user.isAuthenticated === true) {
+        console.log(cadastrado)
+        if (state.user.isAuthenticated === true && cadastrado === true) {
             navigate("/");
             window.location.reload();
         }

@@ -8,6 +8,7 @@ import MinhaConta from "./pages/MinhaConta";
 import { RequireAuth } from "./components/RequireAuth";
 import CadastroPet from "./pages/CadastroPet";
 import DetalhesPet from "./pages/DetalhesPet";
+import CadastroUsuario from "./pages/CadastroUsuario";
 
 
 import "./App.css";
@@ -29,7 +30,7 @@ function App() {
                 <Route path="/conta" element={<RequireAuth> <MinhaConta /> </RequireAuth> } />
                 <Route path="/cadastroPet" element={<RequireAuth> <CadastroPet/> </RequireAuth> } />
                 <Route path="/detalhesPet/:id" element={ <DetalhesPet/> } />
-
+                <Route path="/cadastroUser" element={ <CadastroUsuario/> } />
             </Routes>
         </Router>
         </UserProvider>

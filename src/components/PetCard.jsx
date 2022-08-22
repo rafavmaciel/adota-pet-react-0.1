@@ -32,7 +32,7 @@ export default function PetCard(props) {
                             <Typography variant="small" color="grey" className="flex gap-1">
                                 <i className="fas fa-map-marker-alt fa-sm mt-[3px]" />
                                 {props.cidade}
-                                <p className=''>{` - ${props.estado}`}</p>
+                                <p>{` - ${props.estado}`}</p>
                             </Typography>
                         </CardFooter>
                     </Card>

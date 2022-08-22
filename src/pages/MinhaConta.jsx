@@ -19,7 +19,7 @@ export default function MinhaConta() {
     function handleClickModal() {
         navigate("/cadastroPet");
     }
-
+    console.log(state);
     return (
         <div>
         <Navbar className="flex-col ">
@@ -28,7 +28,7 @@ export default function MinhaConta() {
                 <div className="flex items-center">
                     <img src={state.user.photoUrl} style={{}} alt="user" />
                     <div className="ml-8 mr-8">
-                        <p className="text-4xl text-black">{state.user.user}</p>
+                        <p className="text-4xl text-black">{state.user.user ? state.user.user: state.nomeUser }</p>
                         <p className="text-base text-black">{state.user.email}</p>
                     </div>
                 </div>

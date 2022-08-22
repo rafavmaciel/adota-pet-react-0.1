@@ -44,7 +44,22 @@ export const UserProvider = ({ children }) => {
                         isAuthenticated: false,
                     },
                 };
-
+            case "SET_REGISTEDED":
+                return {
+                    ...state,
+                    user: {
+                        ...state.user,
+                        isRegistered: action.payload,
+                    },
+                };
+            case "SET_DATA_CAD_USER":
+                return {
+                    ...state,
+                    user: {
+                        ...state.user,
+                        dataCadUser: action.payload,
+                    },
+                };
             default:
                 return state;
         }
