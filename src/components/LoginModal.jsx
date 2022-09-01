@@ -21,7 +21,7 @@ export default function LoginModal() {
 
 //buscar usuario
 const  getUser = async (user) => {
-    const userRef =  doc(db, "users", user.uid)
+    const userRef =  doc(db, "users", user.email);
     const userDoc = await getDoc(userRef).then(doc => {
         return doc.exists()
     }).catch(err => {
@@ -40,8 +40,8 @@ const  getUser = async (user) => {
 
 
     useEffect(() => {
-        console.log(cadastrado)
-        if (state.user.isAuthenticated === true && cadastrado === true) {
+        console.log(state.user)
+        if (state.user.isAuthenticated === true && state.user.isRegistered === true) {
             navigate("/");
             window.location.reload();
         }

@@ -13,7 +13,7 @@ export default function FormCadastroPet() {
         e.preventDefault();
         const {nomeUser, email, cpfUser, telUser, estadoUser, cidadeUser} = e.target.elements;
         console.log(nomeUser.value, email.value, cpfUser.value, telUser.value, estadoUser.value, cidadeUser.value);
-        const userRef = doc(db, "users", state.user.uid);
+        const userRef = doc(db, "users", state.user.email);
         let data = {
             nomeUser: nomeUser.value,
             email: email.value,
@@ -27,7 +27,6 @@ export default function FormCadastroPet() {
         setDoc(userRef, data).then((user) => {
             dispatch({ type: "SET_REGISTEDED", payload: true });
             dispatch({ type: "SET_DATA_CAD_USER", payload: data });
-            console.log("usuario cadastrado com sucesso");
             navigate("/");
         }).catch(err => {
             console.log(err);

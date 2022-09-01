@@ -10,6 +10,7 @@ let initialState = {
         uid: "",
         provider: "",
         isAuthenticated: false,
+        isRegistered: false,
     },
 };
 

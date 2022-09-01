@@ -1,15 +1,31 @@
-import { useState, useEffect, useReducer, useContext } from "react";
+import { useState, useContext } from "react";
 import { db, storage } from "../config/firebase";
-import { collection, addDoc, Timestamp } from "firebase/firestore";
+import { doc, updateDoc,collection, setDoc,addDoc, writeBatch} from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { estadosBrasileiros, tiposAnimais, porteAnimais } from "../content/dadosFormulario";
 import { useNavigate } from "react-router-dom";
+import UserContext, {UserProvider} from "../redux/UserReducer";
 
 export default function FormCadastroPet() {
+    const {state, dispatch} = useContext(UserContext);
     const navigate = useNavigate();
     const [imgUrlPrincipal, setImgUrlPrincipal] = useState("");
     const [imgsObj, setImgsObj] = useState([]);
     const [progress, setProgress] = useState(0);
+
+    //funcção para gerar um id único
+    function makeid(length) {
+        var result = "";
+        var characters =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var charactersLength = characters.length;
+        for (var i = 0; i < length; i++) {
+            result += characters.charAt(
+                Math.floor(Math.random() * charactersLength)
+            );
+        }
+        return result;
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -56,7 +72,7 @@ export default function FormCadastroPet() {
             }
 
             // salva no banco de dados as informações do pet e o caminho das imagens
-            await addDoc(collection(db, "pets"), {
+            const dataPet = {
                 nomePet: e.target.nomePet.value,
                 tipoPet: e.target.tipoPet.value,
                 portePet: e.target.portePet.value,
@@ -66,14 +82,29 @@ export default function FormCadastroPet() {
                 descricaoPet: e.target.descricaoPet.value,
                 imgPet: refs || [],
                 imgPrincipal: refs[0] || "",
-            }).then(() => {
-                document.getElementById("formCadastroPet").reset();
-                setImgsObj([]);
-                setImgUrlPrincipal("");
-                setProgress(0);
-                alert("Pet cadastrado com sucesso!");
-                navigate("/");
-            });
+            };
+
+            const idPet = makeid(10);
+            const batch = writeBatch(db);
+            let petRef = doc(db,'pets',idPet);
+            batch.set(petRef, dataPet);
+            const userRef = doc(db, `users/${state.user.email}/pets/${idPet}`);
+            batch.set(userRef, dataPet);
+            
+            await batch.commit();
+
+
+
+            //let pet = await addDoc(collection(db, "pets"), dataPet);
+            
+
+            // salva a referência do pet no usuário
+            //const userRef = doc(db, `users/${state.user.email}/pets/${pet.id}`);
+            //const user = await setDoc(userRef, pet.id);
+
+            
+            //navigate("/");
+
         } catch (error) {
             alert(error);
         }
