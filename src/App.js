@@ -22,7 +22,10 @@ function App() {
         <Router>
             <Navbar />
             <Routes>
+                {/* retorna pra a home quando a url for invalida */}
+                
                 <Route path="/" element={<Home />} />
+                <Route path="*" element={<Home />} />
                 <Route path="/sign-up" element={<LoginModal />} />
                 <Route path="/pets" element={<Home />} />
                 <Route path="/contact" element={<ContactUs />} />

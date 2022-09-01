@@ -42,3 +42,9 @@
 .Search-item input:hover {
     outline: none;
 }
+
+@media screen and (max-width: 960px) {
+    .Search-item {
+        display: none;
+    }
+}

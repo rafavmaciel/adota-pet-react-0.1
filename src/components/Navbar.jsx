@@ -87,6 +87,8 @@ export default function Navbar() {
                     </li>
                 </ul>
                 {auth ? <DropdownUsuario /> : <Button />}
+                {/* if widonw is small */}
+                
                 <Search />
             </nav>
         </>
