@@ -33,7 +33,11 @@ export default function MinhaConta() {
 
     const getPetsUser = async () => {
         onSnapshot(collection(db, "users", state.user.email, "pets"), (snapshot) => {
-            setPetsUser(snapshot.docs.map((doc) => doc.data()));
+            const data = snapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setPetsUser(data);
             setLoading(false);
         });
     };
@@ -89,7 +93,7 @@ export default function MinhaConta() {
                                     </div>
                                 </div>
                                 {/* editar pets */}
-                                <button className="bg-black hover:bg-stone-300 text-white font-bold py-2 px-4 mx-5 rounded" onClick={() => navigate(`/editarPet/${i}`)}>Editar</button>
+                                <button className="bg-black hover:bg-stone-300 text-white font-bold py-2 px-4 mx-5 rounded" onClick={() => navigate(`/editarPet/${pet.id}`)}>Editar</button>
                                 </div>
                             ))}
                         </div>

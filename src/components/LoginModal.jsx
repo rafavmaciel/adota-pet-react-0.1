@@ -38,12 +38,12 @@ const  getUser = async (user) => {
 
     useEffect(() => {
         console.log(state.user)
-        if (state.user.isRegistered === true) {
+        if (state.user.isAuthenticated === true) {
             navigate("/");
-            window.location.reload();
+            //window.location.reload();
         }
     }
-    , [state.user.isRegistered]);
+    , [state.user.isAuthenticated]);
 
     
     return (
