@@ -1,13 +1,13 @@
 import { useState, useContext } from "react";
 import { db, storage } from "../config/firebase";
-import { doc, updateDoc,collection, setDoc,addDoc, writeBatch} from "firebase/firestore";
+import { doc, writeBatch } from "firebase/firestore";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { estadosBrasileiros, tiposAnimais, porteAnimais } from "../content/dadosFormulario";
 import { useNavigate } from "react-router-dom";
-import UserContext, {UserProvider} from "../redux/UserReducer";
+import UserContext from "../redux/UserReducer";
 
 export default function FormCadastroPet() {
-    const {state, dispatch} = useContext(UserContext);
+    const { state, dispatch } = useContext(UserContext);
     const navigate = useNavigate();
     const [imgUrlPrincipal, setImgUrlPrincipal] = useState("");
     const [imgsObj, setImgsObj] = useState([]);
@@ -16,59 +16,58 @@ export default function FormCadastroPet() {
     //funcção para gerar um id único
     function makeid(length) {
         var result = "";
-        var characters =
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         var charactersLength = characters.length;
         for (var i = 0; i < length; i++) {
-            result += characters.charAt(
-                Math.floor(Math.random() * charactersLength)
-            );
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
         return result;
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        var refs = [];
         try {
             // pega todas as imagens que foram selecionadas
             const files = e.target.fotosPet.files;
             const imgs = [];
-            const refs = [];
             if (files.length > 0) {
                 // pega a key de cada imagem
                 Object.keys(files).forEach((key) => {
                     const file = files[key];
                     imgs.push(file);
                 });
-                let promessas = Promise.all(
+                let promessas = await Promise.all(
                     // para cada imagem, faz o upload e pega a url
                     imgs.map(async (image) => {
-                        let storageRef = ref(storage, `images/${image.name}`);
-                        let uploadTask = uploadBytesResumable(storageRef, image);
-                        uploadTask.on(
-                            "state_changed",
-                            (snapshot) => {
-                                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                                setProgress(progress);
-                            },
-                            (error) => {
-                                console.log(error);
-                            },
-                            await getDownloadURL(uploadTask.snapshot.ref)
-                                .then((downloadURL) => {
-                                    console.log(downloadURL);
-                                    refs.push(downloadURL);
-                                    setImgsObj((imgsObj) => [...imgsObj, downloadURL]);
-                                })
-                                .catch((error) => {
-                                    console.log(error);
-                                })
-                        );
+                        await new Promise((resolve, reject) => {
+                        const imgRef = ref(storage, "images/" + image.name);
+                        const uploadTask = uploadBytesResumable(imgRef, image);
+                                uploadTask.on(
+                                    "state_changed",
+                                    (snapshot) => {
+                                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                        setProgress(progress);
+                                    },
+                                    (error) => {
+                                        console.log(error);
+                                    },
+                                    () => {
+                                        getDownloadURL(uploadTask.snapshot.ref)
+                                            .then((downloadURL) => {
+                                                console.log("File available at", downloadURL);
+                                                refs.push(downloadURL);
+                                                resolve(refs);
+                                            })
+                                            .catch((error) => {
+                                                console.log(error);
+                                                reject(error);
+                                            });
+                                    }
+                            );
+                        });
                     })
                 );
-
-                //esprema todas as promises serem resolvidas
-                await promessas;
             }
 
             // salva no banco de dados as informações do pet e o caminho das imagens
@@ -81,30 +80,22 @@ export default function FormCadastroPet() {
                 cidadePet: e.target.cidadePet.value,
                 descricaoPet: e.target.descricaoPet.value,
                 imgPet: refs || [],
-                imgPrincipal: refs[0] || "",
+                // pega a url da imagem principal, se nao tiver, pega uma imagem padrão
+                imgPrincipal:
+                    refs[0] ||
+                    "https://firebasestorage.googleapis.com/v0/b/pet-adoption-2c0f9.appspot.com/o/images%2Fpet.png?alt=media&token=8b8b0b0f-8b8c-4b8f-8b8c-4b8f8b8c4b8f",
             };
 
             const idPet = makeid(10);
             const batch = writeBatch(db);
-            let petRef = doc(db,'pets',idPet);
+            let petRef = doc(db, "pets", idPet);
             batch.set(petRef, dataPet);
             const userRef = doc(db, `users/${state.user.email}/pets/${idPet}`);
             batch.set(userRef, dataPet);
-            
+
             await batch.commit();
 
-
-
-            //let pet = await addDoc(collection(db, "pets"), dataPet);
-            
-
-            // salva a referência do pet no usuário
-            //const userRef = doc(db, `users/${state.user.email}/pets/${pet.id}`);
-            //const user = await setDoc(userRef, pet.id);
-
-            
-            //navigate("/");
-
+            navigate("/");
         } catch (error) {
             alert(error);
         }
@@ -136,7 +127,9 @@ export default function FormCadastroPet() {
                         required
                     >
                         {tiposAnimais.map((tipo, i) => (
-                            <option value={tipo} key={i}>{tipo}</option>
+                            <option value={tipo} key={i}>
+                                {tipo}
+                            </option>
                         ))}
                     </select>
                 </div>
@@ -148,9 +141,12 @@ export default function FormCadastroPet() {
                         id="portePet"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Flowbite"
+                        required
                     >
                         {porteAnimais.map((tipo, i) => (
-                            <option value={tipo} key={i}>{tipo}</option>
+                            <option value={tipo} key={i}>
+                                {tipo}
+                            </option>
                         ))}
                     </select>
                 </div>
@@ -206,6 +202,9 @@ export default function FormCadastroPet() {
                     id="descricaoPet"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="john.doe@portePet.com"
+                    wrap="hard"
+                    cols={30}
+                    rows={5}
                 />
             </div>
             <div className="grid gap-6 mb-6 lg:grid-cols-2">

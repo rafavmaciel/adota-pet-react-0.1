@@ -1,13 +1,13 @@
 export const MenuPetItens = [
   {
     title: 'Cachorro',
-    path: '/search-pet/cachorro',
+    path: '/search-pet/Cachorro',
     cName: 'dropdown-link',
     search : 'ca',
   },
   {
     title: 'Gato',
-    path: '/search-pet/gato',
+    path: '/search-pet/Gato',
     cName: 'dropdown-link',
     search : 'ga',
   },

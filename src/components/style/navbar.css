@@ -170,5 +170,9 @@
     }
     input {
       display: none;
-    }  
+    }
+
+    .drop-usuario{
+      display: none;
+    }
   }

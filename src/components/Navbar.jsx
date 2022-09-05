@@ -47,7 +47,7 @@ export default function Navbar() {
             <nav className="navbar">
                 <Link to="/" className="navbar-logo" onClick={closeMobileMenu}>
                     ADOTA PET
-                    <i class="fa fa-paw" />
+                    <i className="fa fa-paw" />
                 </Link>
                 <div className="menu-icon" onClick={handleClick}>
                     <i className={click ? "fas fa-times" : "fas fa-bars"} />
@@ -86,7 +86,11 @@ export default function Navbar() {
                         </Link>
                     </li>
                 </ul>
-                {auth ? <DropdownUsuario /> : <Button />}
+                {auth ?
+                <div className="drop-usuario"> 
+                <DropdownUsuario />
+                </div> : 
+                <Button />}
                 {/* if widonw is small */}
                 
                 <Search />
@@ -94,3 +98,4 @@ export default function Navbar() {
         </>
     );
 }
+

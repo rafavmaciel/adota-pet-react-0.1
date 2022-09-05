@@ -1,13 +1,15 @@
-import React, { useState, useReducer, useEffect, useContext } from "react";
-import UserContext, { UserProvider } from "../redux/UserReducer";
+import React, { useState, useEffect, useContext } from "react";
+import UserContext from "../redux/UserReducer";
 import { useNavigate } from "react-router-dom";
 import { Navbar, CardFooter } from "@material-tailwind/react";
-import CadastroPet from "../components/CadastroPet";
+import { db } from "../config/firebase";
+import { collection, onSnapshot } from "firebase/firestore";
 
 export default function MinhaConta() {
     const navigate = useNavigate();
     const { state, dispatch } = useContext(UserContext);
-    const [ showModal, setShowModal ] = useState(false);
+    const [petsUser, setPetsUser] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     function logout() {
         dispatch({ type: "LOGOUT" });
@@ -16,45 +18,72 @@ export default function MinhaConta() {
         window.location.reload();
     }
 
+    const getPetsUser = async () => {
+        onSnapshot(collection(db, "users", state.user.email, "pets"), (snapshot) => {
+            setPetsUser(snapshot.docs.map((doc) => doc.data()));
+            setLoading(false);
+        });
+    };
+
+    useEffect(() => {
+        getPetsUser();
+    }, []);
+
     function handleClickModal() {
         navigate("/cadastroPet");
     }
-    console.log(state);
     return (
         <div>
-        <Navbar className="flex-col ">
-{/* infromações do usuário */}
-            <CardFooter className="flex justify-between items-center bg-blue-500 mb-7">
-                <div className="flex items-center">
-                    <img src={state.user.photoUrl} style={{}} alt="user" />
-                    <div className="ml-8 mr-8">
-                        <p className="text-4xl text-black">{state.user.user ? state.user.user: state.nomeUser }</p>
-                        <p className="text-base text-black">{state.user.email}</p>
+            <Navbar className="flex-col ">
+                {/* infromações do usuário */}
+                <CardFooter className="flex justify-between items-center bg-blue-500 mb-7 border-8 border-t-8 shadow-md">
+                    <div className="flex items-center">
+                        <img src={state.user.photoUrl} style={{}} alt="user" />
+                        <div className="ml-8 mr-8">
+                            <p className="text-4xl text-black">{state.user.user ? state.user.user : state.nomeUser}</p>
+                            <p className="text-base text-black">{state.user.email}</p>
+                        </div>
                     </div>
-                </div>
-                <div className="flex items-center">
-                    <button
-                        className="bg-black hover:bg-stone-300 text-white font-bold py-2 px-4 rounded"
-                        onClick={logout}
-                    >
-                        Sair
-                    </button>
-                </div>
-            </CardFooter>
+                    <div className="flex items-center">
+                        <button
+                            className="bg-black hover:bg-stone-300 text-white font-bold py-2 px-4 rounded"
+                            onClick={logout}
+                        >
+                            Sair
+                        </button>
+                    </div>
+                </CardFooter>
 
-{/* lista de pets */}
-            <CardFooter className="flex justify-between items-center">
-                <div className="flex flex-col">
-                    <p className="text-4xl text-black mb-5">Meus pets </p>
-                    <p className="text-base text-black"> cachorro 1 </p>
-                    <p className="text-base text-black"> cachorro 2 </p>
-                    <p className="text-base text-black"> cachorro 3 </p>
+                {/* lista de pets */}
+                {loading ? (
+                    <div className="flex justify-center items-center">
+                        <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-12 w-12 mb-4"></div>
                     </div>
-                    <button  onClick={ handleClickModal } className="bg-black hover:bg-stone-300 text-white font-bold py-2 px-4 rounded content-end">
-                        Adicionar
-                    </button>
-            </CardFooter>
-        </Navbar>
-    </div>
+                ) : (
+                    <CardFooter className="flex justify-between items-center">
+                        <div className="flex flex-col">
+                            <p className="text-4xl text-black mb-5 text-blue-600 ">Meus pets </p>
+                            {petsUser.map((pet, i) => (
+                                <div className="flex items-center m-2 bg-[#fafafa] border-8 border-t-8 shadow-md transition duration-500 hover:scale-105 " id= {i} >
+                                    <img className="w-500" src={pet.imgPrincipal} style={{ width:"100px" }} alt="user"  />
+                                    <div className="ml-8 mr-8">
+                                        <p className="text-2xl text-blue-600">Nome do pet:</p>
+                                        <p className="text-xl text-black ">{pet.nomePet}</p>
+                                        <p className="text-l text-blue-600 mt-2">Status do anuncio:</p>
+                                        <p className="text-l text-black mx-2">{pet.statusPet}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <button
+                            onClick={handleClickModal}
+                            className="bg-black hover:bg-stone-300 text-white font-bold py-2 px-4 rounded content-end"
+                        >
+                            Adicionar
+                        </button>
+                    </CardFooter>
+                )}
+            </Navbar>
+        </div>
     );
 }

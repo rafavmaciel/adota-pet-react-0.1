@@ -10,19 +10,18 @@ import { collection, addDoc, doc, Timestamp, getDoc } from "firebase/firestore";
 export default function LoginModal() {
     const navigate = useNavigate();
     const {state, dispatch} = useContext(UserContext);
-    const [cadastrado, setCadastrado] = useState(false);
     async function logarGoogle() {
         let user = await signInWithGoogle();
         dispatch({ type: "SET_USER", payload: user });
+        console.log('linha 16', state.user);
         await getUser(user);
-        dispatch({ type: "SET_IS_AUTHENTICATED", payload: true });
-        navigate("/");
     }
 
 //buscar usuario
 const  getUser = async (user) => {
     const userRef =  doc(db, "users", user.email);
     const userDoc = await getDoc(userRef).then(doc => {
+        console.log(doc.exists());
         return doc.exists()
     }).catch(err => {
         console.log(err)
@@ -33,20 +32,20 @@ const  getUser = async (user) => {
     }
     else {
         dispatch({ type: "SET_REGISTEDED", payload: true });
-        setCadastrado(true);
         console.log("usuario existe")
+        navigate("/");
     }
 }
-
+//dispatch({ type: "SET_IS_AUTHENTICATED", payload: true });
 
     useEffect(() => {
         console.log(state.user)
-        if (state.user.isAuthenticated === true && state.user.isRegistered === true) {
+        if (state.user.isRegistered === true) {
             navigate("/");
             window.location.reload();
         }
     }
-    , [state.user.isAuthenticated]);
+    , [state.user.isRegistered]);
 
     
     return (
