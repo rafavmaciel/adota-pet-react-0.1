@@ -82,6 +82,7 @@ export const UserProvider = ({ children }) => {
                 dispatch({ type: "SET_IS_AUTHENTICATED", payload: false });
             }
         });
+        console.log(state.user);
     }, []);
 
     const [state, dispatch] = useReducer(reducer, initialState);

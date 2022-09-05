@@ -13,7 +13,6 @@ export default function LoginModal() {
     async function logarGoogle() {
         let user = await signInWithGoogle();
         dispatch({ type: "SET_USER", payload: user });
-        console.log('linha 16', state.user);
         await getUser(user);
     }
 
@@ -21,7 +20,6 @@ export default function LoginModal() {
 const  getUser = async (user) => {
     const userRef =  doc(db, "users", user.email);
     const userDoc = await getDoc(userRef).then(doc => {
-        console.log(doc.exists());
         return doc.exists()
     }).catch(err => {
         console.log(err)
@@ -32,7 +30,7 @@ const  getUser = async (user) => {
     }
     else {
         dispatch({ type: "SET_REGISTEDED", payload: true });
-        console.log("usuario existe")
+        console.log(state.user)
         navigate("/");
     }
 }

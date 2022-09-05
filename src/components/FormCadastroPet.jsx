@@ -80,6 +80,7 @@ export default function FormCadastroPet() {
                 cidadePet: e.target.cidadePet.value,
                 descricaoPet: e.target.descricaoPet.value,
                 imgPet: refs || [],
+                donoPet: state.user.user,
                 // pega a url da imagem principal, se nao tiver, pega uma imagem padrão
                 imgPrincipal:
                     refs[0] ||

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Navbar, CardFooter } from "@material-tailwind/react";
 import { db } from "../config/firebase";
 import { collection, onSnapshot } from "firebase/firestore";
+import { async } from "@firebase/util";
 
 export default function MinhaConta() {
     const navigate = useNavigate();
@@ -18,6 +19,18 @@ export default function MinhaConta() {
         window.location.reload();
     }
 
+    const getUser = async () => {
+        onSnapshot(
+            collection(db, "users", state.user.email),
+            (querySnapshot) => {
+                if (!querySnapshot.exists()) {
+                    navigate("/cadastroUser");
+                } 
+            }
+        );
+    };
+    
+
     const getPetsUser = async () => {
         onSnapshot(collection(db, "users", state.user.email, "pets"), (snapshot) => {
             setPetsUser(snapshot.docs.map((doc) => doc.data()));
@@ -26,6 +39,7 @@ export default function MinhaConta() {
     };
 
     useEffect(() => {
+        getUser();
         getPetsUser();
     }, []);
 
@@ -64,6 +78,7 @@ export default function MinhaConta() {
                         <div className="flex flex-col">
                             <p className="text-4xl text-black mb-5 text-blue-600 ">Meus pets </p>
                             {petsUser.map((pet, i) => (
+                                <div key={i} className="flex items-center">
                                 <div className="flex items-center m-2 bg-[#fafafa] border-8 border-t-8 shadow-md transition duration-500 hover:scale-105 " id= {i} >
                                     <img className="w-500" src={pet.imgPrincipal} style={{ width:"100px" }} alt="user"  />
                                     <div className="ml-8 mr-8">
@@ -72,6 +87,9 @@ export default function MinhaConta() {
                                         <p className="text-l text-blue-600 mt-2">Status do anuncio:</p>
                                         <p className="text-l text-black mx-2">{pet.statusPet}</p>
                                     </div>
+                                </div>
+                                {/* editar pets */}
+                                <button className="bg-black hover:bg-stone-300 text-white font-bold py-2 px-4 mx-5 rounded" onClick={() => navigate(`/editarPet/${i}`)}>Editar</button>
                                 </div>
                             ))}
                         </div>
