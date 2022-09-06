@@ -17,7 +17,7 @@ export default function DropdownUsuario() {
 
     return (
         <div className="Menu-usuario">
-            <img  onClick={handleClick} src={state.user.photoUrl} alt="user" />
+            <img  onClick={handleClick} src={state.user.photoUrl}  referrerPolicy="no-referrer"  />
                 <ul  className={click ? "dropdown-content" : "dropdown-content clicked"}>
                 <li  onClick={handleClick} className="dropdown-item">
                     <Link to="/conta">Perfil</Link>

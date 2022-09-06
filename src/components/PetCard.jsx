@@ -45,8 +45,6 @@ export default function PetCard(props) {
             <CardFooter divider className="flex items-center justify-between py-3">
                 <Typography variant="small" color="grey" className="flex gap-1">
                     <i className="fas fa-map-marker-alt fa-sm mt-[3px]" />
-                    {/* {props.cidade? props.cidade : ""}
-                    <p>{props.estado? ` - ${props.estado } `:""}</p> */}
                     <p>{formatarLocalizacao()}</p>
                 </Typography>
             </CardFooter>

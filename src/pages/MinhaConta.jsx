@@ -3,8 +3,7 @@ import UserContext from "../redux/UserReducer";
 import { useNavigate } from "react-router-dom";
 import { Navbar, CardFooter } from "@material-tailwind/react";
 import { db } from "../config/firebase";
-import { collection, onSnapshot } from "firebase/firestore";
-import { async } from "@firebase/util";
+import { collection, onSnapshot,doc } from "firebase/firestore";
 
 export default function MinhaConta() {
     const navigate = useNavigate();
@@ -21,10 +20,11 @@ export default function MinhaConta() {
 
     const getUser = async () => {
         onSnapshot(
-            collection(db, "users", state.user.email),
-            (querySnapshot) => {
-                if (!querySnapshot.exists()) {
+            doc(db, "users", state.user.email),
+            (doc) => {
+                if (!doc.exists()) {
                     navigate("/cadastroUser");
+                    console.log("usuario nao existe");
                 } 
             }
         );
@@ -56,7 +56,7 @@ export default function MinhaConta() {
                 {/* infromações do usuário */}
                 <CardFooter className="flex justify-between items-center bg-blue-500 mb-7 border-8 border-t-8 shadow-md">
                     <div className="flex items-center">
-                        <img src={state.user.photoUrl} style={{}} alt="user" />
+                        <img src={state.user.photoUrl} style={{}} referrerPolicy="no-referrer" />
                         <div className="ml-8 mr-8">
                             <p className="text-4xl text-black">{state.user.user ? state.user.user : state.nomeUser}</p>
                             <p className="text-base text-black">{state.user.email}</p>

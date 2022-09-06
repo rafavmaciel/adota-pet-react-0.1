@@ -1,5 +1,5 @@
 import { useReducer, createContext, useEffect } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import {onAuthStateChanged } from "firebase/auth";
 import { auth } from "../config/firebase";
 
 let initialState = {
@@ -82,7 +82,6 @@ export const UserProvider = ({ children }) => {
                 dispatch({ type: "SET_IS_AUTHENTICATED", payload: false });
             }
         });
-        console.log(state.user);
     }, []);
 
     const [state, dispatch] = useReducer(reducer, initialState);

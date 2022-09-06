@@ -1,11 +1,11 @@
 import { FaFacebookF, FaLinkedinIn, FaGoogle, FaEnvelope} from "react-icons/fa";
 import { MdLockOutline } from "react-icons/md";
 import { signInWithGoogle } from "../config/googleAtutentication";
-import { useEffect, useContext,useState} from "react";
+import { useEffect, useContext} from "react";
 import { useNavigate } from "react-router-dom";
-import UserContext, {UserProvider} from "../redux/UserReducer";
+import UserContext from "../redux/UserReducer";
 import {db} from "../config/firebase";
-import { collection, addDoc, doc, Timestamp, getDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function LoginModal() {
     const navigate = useNavigate();

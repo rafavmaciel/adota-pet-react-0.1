@@ -1,6 +1,5 @@
 import React from "react";
 import Navbar from "./components/Navbar";
-import { useEffect, useReducer } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import ContactUs from "./pages/ContactUs";
@@ -9,7 +8,7 @@ import { RequireAuth } from "./components/RequireAuth";
 import CadastroPet from "./pages/CadastroPet";
 import DetalhesPet from "./pages/DetalhesPet";
 import CadastroUsuario from "./pages/CadastroUsuario";
-
+import EditarPet from "./pages/EditarPet";
 
 import "./App.css";
 import SearchPage from "./pages/SearchPage";
@@ -34,6 +33,7 @@ function App() {
                 <Route path="/cadastroPet" element={<RequireAuth> <CadastroPet/> </RequireAuth> } />
                 <Route path="/detalhesPet/:id" element={ <DetalhesPet/> } />
                 <Route path="/cadastroUser" element={ <CadastroUsuario/> } />
+                <Route path="/editarPet/:id" element={ <RequireAuth> <EditarPet/> </RequireAuth> } />
             </Routes>
         </Router>
         </UserProvider>

@@ -5,7 +5,7 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { estadosBrasileiros, tiposAnimais, porteAnimais } from "../content/dadosFormulario";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../redux/UserReducer";
-
+import { Spinner } from "@material-tailwind/react";
 export default function FormCadastroPet() {
     const { state, dispatch } = useContext(UserContext);
     const navigate = useNavigate();
@@ -37,7 +37,7 @@ export default function FormCadastroPet() {
                     const file = files[key];
                     imgs.push(file);
                 });
-                let promessas = await Promise.all(
+                await Promise.all(
                     // para cada imagem, faz o upload e pega a url
                     imgs.map(async (image) => {
                         await new Promise((resolve, reject) => {
@@ -153,7 +153,7 @@ export default function FormCadastroPet() {
                 </div>
                 <div>
                     <label
-                        for="Telefone para contato"
+                        for="telefonePet"
                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300"
                     >
                         Telefone para contato{" "}
@@ -228,7 +228,7 @@ export default function FormCadastroPet() {
                 type="submit"
                 className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 my-10 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
             >
-                Submit
+                Salvar
             </button>
         </form>
     );
