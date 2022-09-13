@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function FormEditarPet(props) {
     const navigate = useNavigate();
-    const { state, dispatch } = useContext(UserContext);
+    const { state } = useContext(UserContext);
     const { idPet } = props;
     const [pet, setPet] = useState(null);
     const [loading, setLoading] = useState(true);

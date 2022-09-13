@@ -4,12 +4,16 @@ import { useNavigate } from "react-router-dom";
 import { Navbar, CardFooter } from "@material-tailwind/react";
 import { db } from "../config/firebase";
 import { collection, onSnapshot,doc } from "firebase/firestore";
+import ModalEditarImgs from "../components/ModalEditarImgs";
 
 export default function MinhaConta() {
     const navigate = useNavigate();
     const { state, dispatch } = useContext(UserContext);
     const [petsUser, setPetsUser] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [showModal, setShowModal] = useState(false);
+    const [selectedPet, setSelectedPet] = useState(null);
+    const [idPet, setIdPet] = useState(null);
 
     function logout() {
         dispatch({ type: "LOGOUT" });
@@ -30,7 +34,6 @@ export default function MinhaConta() {
         );
     };
     
-
     const getPetsUser = async () => {
         onSnapshot(collection(db, "users", state.user.email, "pets"), (snapshot) => {
             const data = snapshot.docs.map((doc) => ({
@@ -41,6 +44,10 @@ export default function MinhaConta() {
             setLoading(false);
         });
     };
+
+    function changeModal() {
+        setShowModal(!showModal);
+    }
 
     useEffect(() => {
         getUser();
@@ -94,6 +101,8 @@ export default function MinhaConta() {
                                 </div>
                                 {/* editar pets */}
                                 <button className="bg-black hover:bg-stone-300 text-white font-bold py-2 px-4 mx-5 rounded" onClick={() => navigate(`/editarPet/${pet.id}`)}>Editar</button>
+                                {/* editar imagem principal */}
+                                <button className="bg-black hover:bg-stone-300 text-white font-bold py-2 px-4 mx-5 rounded" onClick={()=>{setShowModal(true); setSelectedPet(pet); setIdPet(pet.id) }} >Editar imagem principal</button>
                                 </div>
                             ))}
                         </div>
@@ -106,6 +115,8 @@ export default function MinhaConta() {
                     </CardFooter>
                 )}
             </Navbar>
+            {showModal ? <ModalEditarImgs changeModal = {changeModal} pet ={selectedPet } idPet={idPet} /> : null}
+
         </div>
     );
 }

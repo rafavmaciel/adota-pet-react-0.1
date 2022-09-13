@@ -5,12 +5,9 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { estadosBrasileiros, tiposAnimais, porteAnimais } from "../content/dadosFormulario";
 import { useNavigate } from "react-router-dom";
 import UserContext from "../redux/UserReducer";
-import { Spinner } from "@material-tailwind/react";
 export default function FormCadastroPet() {
-    const { state, dispatch } = useContext(UserContext);
+    const { state } = useContext(UserContext);
     const navigate = useNavigate();
-    const [imgUrlPrincipal, setImgUrlPrincipal] = useState("");
-    const [imgsObj, setImgsObj] = useState([]);
     const [progress, setProgress] = useState(0);
 
     //funcção para gerar um id único
@@ -222,7 +219,7 @@ export default function FormCadastroPet() {
                 </div>
             </div>
             <div className="flex justify-end">
-                {!imgUrlPrincipal && <progress className="progress" value={progress} max="100" />}
+                {progress > 0 && <progress value={progress} max="100" />}
             </div>
             <button
                 type="submit"
