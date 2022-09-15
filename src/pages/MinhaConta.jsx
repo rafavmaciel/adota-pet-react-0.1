@@ -3,7 +3,7 @@ import UserContext from "../redux/UserReducer";
 import { useNavigate } from "react-router-dom";
 import { Navbar, CardFooter } from "@material-tailwind/react";
 import { db } from "../config/firebase";
-import { collection, onSnapshot,doc } from "firebase/firestore";
+import { collection, onSnapshot, doc } from "firebase/firestore";
 import ModalEditarImgs from "../components/ModalEditarImgs";
 
 export default function MinhaConta() {
@@ -23,17 +23,14 @@ export default function MinhaConta() {
     }
 
     const getUser = async () => {
-        onSnapshot(
-            doc(db, "users", state.user.email),
-            (doc) => {
-                if (!doc.exists()) {
-                    navigate("/cadastroUser");
-                    console.log("usuario nao existe");
-                } 
+        onSnapshot(doc(db, "users", state.user.email), (doc) => {
+            if (!doc.exists()) {
+                navigate("/cadastroUser");
+                console.log("usuario nao existe");
             }
-        );
+        });
     };
-    
+
     const getPetsUser = async () => {
         onSnapshot(collection(db, "users", state.user.email, "pets"), (snapshot) => {
             const data = snapshot.docs.map((doc) => ({
@@ -90,19 +87,41 @@ export default function MinhaConta() {
                             <p className="text-4xl text-black mb-5 text-blue-600 ">Meus pets </p>
                             {petsUser.map((pet, i) => (
                                 <div key={i} className="flex items-center">
-                                <div className="flex items-center m-2 bg-[#fafafa] border-8 border-t-8 shadow-md transition duration-500 hover:scale-105 " id= {i} >
-                                    <img className="w-500" src={pet.imgPrincipal} style={{ width:"100px" }} alt="user"  />
-                                    <div className="ml-8 mr-8">
-                                        <p className="text-2xl text-blue-600">Nome do pet:</p>
-                                        <p className="text-xl text-black ">{pet.nomePet}</p>
-                                        <p className="text-l text-blue-600 mt-2">Status do anuncio:</p>
-                                        <p className="text-l text-black mx-2">{pet.statusPet}</p>
+                                    <div
+                                        className="flex items-center m-2 bg-[#fafafa] border-8 border-t-8 shadow-md transition duration-500 hover:scale-105 "
+                                        id={i}
+                                    >
+                                        <img
+                                            className="w-500"
+                                            src={pet.imgPrincipal}
+                                            style={{ width: "100px" }}
+                                            alt="user"
+                                        />
+                                        <div className="ml-8 mr-8">
+                                            <p className="text-2xl text-blue-600">Nome do pet:</p>
+                                            <p className="text-xl text-black ">{pet.nomePet}</p>
+                                            <p className="text-l text-blue-600 mt-2">Status do anuncio:</p>
+                                            <p className="text-l text-black mx-2">{pet.statusPet}</p>
+                                        </div>
                                     </div>
-                                </div>
-                                {/* editar pets */}
-                                <button className="bg-black hover:bg-stone-300 text-white font-bold py-2 px-4 mx-5 rounded" onClick={() => navigate(`/editarPet/${pet.id}`)}>Editar</button>
-                                {/* editar imagem principal */}
-                                <button className="bg-black hover:bg-stone-300 text-white font-bold py-2 px-4 mx-5 rounded" onClick={()=>{setShowModal(true); setSelectedPet(pet); setIdPet(pet.id) }} >Editar imagem principal</button>
+                                    {/* editar pets */}
+                                    <button
+                                        className="bg-black hover:bg-stone-300 text-white font-bold py-2 px-4 mx-5 rounded"
+                                        onClick={() => navigate(`/editarPet/${pet.id}`)}
+                                    >
+                                        Editar
+                                    </button>
+                                    {/* editar imagem principal */}
+                                    <button
+                                        className="bg-black hover:bg-stone-300 text-white font-bold py-2 px-4 mx-5 rounded"
+                                        onClick={() => {
+                                            setShowModal(true);
+                                            setSelectedPet(pet);
+                                            setIdPet(pet.id);
+                                        }}
+                                    >
+                                        Editar imagem principal
+                                    </button>
                                 </div>
                             ))}
                         </div>
@@ -115,8 +134,7 @@ export default function MinhaConta() {
                     </CardFooter>
                 )}
             </Navbar>
-            {showModal ? <ModalEditarImgs changeModal = {changeModal} pet ={selectedPet } idPet={idPet} /> : null}
-
+            {showModal ? <ModalEditarImgs changeModal={changeModal} pet={selectedPet} idPet={idPet} /> : null}
         </div>
     );
 }

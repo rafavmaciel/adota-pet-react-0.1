@@ -1,13 +1,12 @@
-import { db} from "../config/firebase";
-import { doc, writeBatch} from "firebase/firestore";
+import { db } from "../config/firebase";
+import { doc, writeBatch } from "firebase/firestore";
 import { useContext } from "react";
 import UserContext from "../redux/UserReducer";
 
 export default function ModalEditarImgs(props) {
-
     const { state } = useContext(UserContext);
-    
-    function handleClick(img){
+
+    function handleClick(img) {
         const batch = writeBatch(db);
         const petUserRef = doc(db, `users/${state.user.email}/pets/${props.idPet}`);
         batch.update(petUserRef, {
@@ -22,7 +21,6 @@ export default function ModalEditarImgs(props) {
         props.changeModal();
     }
 
-
     return (
         <div className="fixed inset-0 z-10 overflow-y-auto">
             <div className="fixed inset-0 w-full h-full bg-black opacity-40" onClick={() => props.changeModal()}></div>
@@ -30,15 +28,20 @@ export default function ModalEditarImgs(props) {
                 <div className="relative w-2/3 p-4 mx-auto bg-white rounded-md shadow-lg">
                     <div className="flex flex-row items-center justify-center">
                         {props.pet.imgPet.map((img, i) => (
-                            <div className="mx-2 my-2 ">
-                                <a key={i} onClick = {()=>handleClick(img)}  >
-                                    <img key={i} src={img} style={{ width: "150px" }} alt="img-blur-shadow" className="hover:scale-105 hover:bg-blue-500 hover:border-2 hover:border-blue-500"/>
+                            <div className="mx-2 my-2 hover:scale-105 hover:bg-blue-500 hover:border-2 hover:border-blue-500">
+                                {/* icone de deletar */}
+                                <i className="fas fa-trash-alt text-red-500 hover:text-red-700" />
+                                <a key={i} onClick={() => handleClick(img)}>
+                                    <img key={i} src={img} style={{ width: "150px" }} alt="img-blur-shadow" />
                                 </a>
                             </div>
                         ))}
                     </div>
-                    <div className="flex-end" >
-                        <button className="bg-black hover:bg-stone-300 text-white font-bold py-2 px-4 rounded" onClick={() => props.changeModal()}>
+                    <div className="flex-end">
+                        <button
+                            className="bg-black hover:bg-stone-300 text-white font-bold py-2 px-4 rounded"
+                            onClick={() => props.changeModal()}
+                        >
                             Fechar
                         </button>
                     </div>
