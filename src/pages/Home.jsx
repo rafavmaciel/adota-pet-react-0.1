@@ -2,24 +2,43 @@ import React from "react";
 import "./style/home.css";
 import PetCard from "../components/PetCard";
 import { db } from "../config/firebase";
-import { useState, useEffect } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import { useState, useEffect, useContext } from "react";
+import { collection, onSnapshot, where } from "firebase/firestore";
 import LateralSearch from "../components/LateralSearch";
+import UserContext from "../redux/UserReducer";
+
 
 export default function Home() {
+    const { state, dispatch } = useContext(UserContext);
     const [pets, setPets] = useState([]);
     const [loading, setLoading] = useState(true);
 
+
     const getPets = async () => {
+        console.log(state.filtrosPesquisa);
         onSnapshot(collection(db, "pets"), (snapshot) => {
             setPets(snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
             setLoading(false);
         });
     };
 
+    function filterPets() {
+         // fazer o filter com o state.filtrosPesquisa
+         let petFiltrados = pets.filter((pet) => {
+            if (state.filtrosPesquisa.estadoPet != null) {
+                return pet.estadoPet == state.filtrosPesquisa.estadoPet;
+            }
+        });
+        setPets(petFiltrados);
+        console.log(pets);
+    }
+
+
     useEffect(() => {
         getPets();
-    }, []);
+        filterPets();
+    }, [state]);
+
     return (
         <>
             <div className="Home">

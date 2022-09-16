@@ -12,6 +12,13 @@ let initialState = {
         isAuthenticated: false,
         isRegistered: false,
     },
+
+    filtrosPesquisa: {
+        estadoPet: null,
+        cidadePet: null,
+        tipoPet: null,
+        portePet: null,
+    },
 };
 
 const UserContext = createContext(initialState);
@@ -61,6 +68,12 @@ export const UserProvider = ({ children }) => {
                         dataCadUser: action.payload,
                     },
                 };
+            case "SET_FILTROS_PESQUISA":
+                return {
+                    ...state,
+                    filtrosPesquisa: action.payload,
+                };
+                
             default:
                 return state;
         }
